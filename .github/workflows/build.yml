@@ -15,11 +15,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Download Sample Android Source
+      - name: Download Standard Android Source
         run: |
           git clone --depth=1 https://github.com .
 
-      - name: Setup Gradle Framework
+      - name: Setup Gradle Framework Tools
         uses: gradle/actions/setup-gradle@v3
 
       - name: Compile and Assemble Debug APK
