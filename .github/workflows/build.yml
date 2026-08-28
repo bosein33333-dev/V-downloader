@@ -12,19 +12,21 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Setup Java JDK 17
+      - name: Set up Java JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Pre-Generate Android Directories
+      - name: Setup Android SDK Environment
+        uses: android-actions/setup-android@v3
+
+      - name: Pre-Generate Android Project Architecture
         run: |
           mkdir -p app/src/main/java/com/mm/mydownloader
           mkdir -p app/src/main/res/values
-          mkdir -p app/src/main/res/layout
 
-      - name: Create Settings Gradle
+      - name: Create Settings Gradle Config
         run: |
           cat << 'EOF' > settings.gradle
           pluginManagement {
@@ -42,7 +44,7 @@ jobs:
           include ':app'
           EOF
 
-      - name: Create Root Build Gradle
+      - name: Create Root Build Gradle Config
         run: |
           cat << 'EOF' > build.gradle
           plugins {
@@ -51,7 +53,7 @@ jobs:
           }
           EOF
 
-      - name: Create App Build Gradle
+      - name: Create App Build Gradle Config
         run: |
           cat << 'EOF' > app/build.gradle
           plugins {
@@ -85,7 +87,7 @@ jobs:
           }
           EOF
 
-      - name: Create Android Resources Configuration
+      - name: Create Android Resources Config
         run: |
           cat << 'EOF' > app/src/main/res/values/strings.xml
           <resources><string name="app_name">V-Downloader</string></resources>
@@ -94,7 +96,7 @@ jobs:
           <resources><style name="Theme.MyDownloader" parent="Theme.AppCompat.Light.NoActionBar"/></resources>
           EOF
 
-      - name: Create Android Application Manifest
+      - name: Create Android Application Manifest Config
         run: |
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
@@ -123,7 +125,7 @@ jobs:
           </manifest>
           EOF
 
-      - name: Create Application Downloader Class
+      - name: Create Application Core Downloader Class
         run: |
           cat << 'EOF' > app/src/main/java/com/mm/mydownloader/App.kt
           package com.mm.mydownloader
@@ -152,7 +154,7 @@ jobs:
           }
           EOF
 
-      - name: Create Main Core App Screen Downloader UI
+      - name: Create Main Target Window Browser UI
         run: |
           cat << 'EOF' > app/src/main/java/com/mm/mydownloader/MainActivity.kt
           package com.mm.mydownloader
@@ -187,21 +189,21 @@ jobs:
           }
           EOF
 
-      - name: Setup Gradle Build Environment
+      - name: Setup Gradle Toolkit build
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.1.1'
 
-      - name: Initialize Gradle Wrapper Local Build
+      - name: Create Local Build Wrapper Environment
         run: |
           gradle wrapper --gradle-version 8.1.1
           chmod +x gradlew
 
-      - name: Compile and Assemble Android Target APK
+      - name: Build and Package target Android APK
         run: |
           ./gradlew assembleDebug
 
-      - name: Export Application APK Artifact Release
+      - name: Upload and Publish Final APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: mydownloader-apk
