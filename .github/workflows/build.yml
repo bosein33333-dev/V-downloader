@@ -15,8 +15,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Generate Android Project Directly
+      - name: Install Gradle Tool to Server
         run: |
+          sudo apt-get update
+          sudo apt-get install -y gradle
+          gradle -v
+
+      - name: Generate Android Project Structure
           mkdir -p app/src/main/java/com/mm/mydownloader app/src/main/res/values
 
           # 1. settings.gradle
@@ -37,7 +42,7 @@ jobs:
           echo "<resources><string name='app_name'>V-Downloader</string></resources>" > app/src/main/res/values/strings.xml
           echo "<resources><style name='Theme.MyDownloader' parent='Theme.AppCompat.Light.NoActionBar'/></resources>" > app/src/main/res/values/themes.xml
 
-          # 5. AndroidManifest.xml (Fixed configuration)
+          # 5. AndroidManifest.xml
           echo "<?xml version='1.0' encoding='utf-8'?>" > app/src/main/AndroidManifest.xml
           echo "<manifest xmlns:android='http://android.com'>" >> app/src/main/AndroidManifest.xml
           echo "    <uses-permission android:name='android.permission.INTERNET'/>" >> app/src/main/AndroidManifest.xml
@@ -65,13 +70,13 @@ jobs:
           echo "import android.webkit.WebViewClient" >> app/src/main/java/com/mm/mydownloader/MainActivity.kt
           echo "import android.widget.LinearLayout" >> app/src/main/java/com/mm/mydownloader/MainActivity.kt
           echo "import androidx.appcompat.app.AppCompatActivity" >> app/src/main/java/com/mm/mydownloader/MainActivity.kt
-          echo "import com.google.android.gms.ads.AdRequest" >> app/src/main/java/com/mm/mydownloader/AdRequest" >> app/src/main/java/com/mm/mydownloader/MainActivity.kt
+          echo "import com.google.android.gms.ads.AdRequest" >> app/src/main/java/com/mm/mydownloader/MainActivity.kt
           echo "import com.google.android.gms.ads.AdView" >> app/src/main/java/com/mm/mydownloader/MainActivity.kt
           echo "class MainActivity : AppCompatActivity() { override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState); val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }; val webView = WebView(this).apply { settings.javaScriptEnabled = true; webViewClient = WebViewClient() }; val adView = AdView(this).apply { setAdSize(com.google.android.gms.ads.AdSize.BANNER); adUnitId = 'ca-app-pub-3940256099942544/6300978111' }; root.addView(webView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f)); root.addView(adView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)); setContentView(root); adView.loadAd(AdRequest.Builder().build()); webView.loadUrl('https://google.com') } }" >> app/src/main/java/com/mm/mydownloader/MainActivity.kt
 
-      - name: Initialize Gradle Framework
+      - name: Generate Local Wrapper
         run: |
-          gradle wrapper --gradle-version 8.2
+          gradle wrapper --gradle-version 8.1.1
           chmod +x gradlew
 
       - name: Compile and Build APK
