@@ -22,6 +22,7 @@ jobs:
           gradle -v
 
       - name: Generate Android Project Structure
+        run: |
           mkdir -p app/src/main/java/com/mm/mydownloader app/src/main/res/values
 
           # 1. settings.gradle
